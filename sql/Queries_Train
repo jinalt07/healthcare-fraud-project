@@ -1,0 +1,205 @@
+-- Table Names 
+SELECT name
+FROM sqlite_master
+WHERE type = 'table';
+
+-- Row Counts
+SELECT 'Beneficiary' AS table_name, COUNT (*) As row_count
+FROM Train_Beneficiarydata
+
+UNION ALL
+SELECT 'Inpatient' AS table_name, COUNT (*) AS row_count
+FROM Train_Inpatientdata
+
+UNION ALL
+SELECT 'Outpatient' AS table_name, COUNT (*) AS row_count
+FROM Train_Outpatientdata
+
+UNION ALL
+
+SELECT 'Provider' AS table_name, COUNT (*) AS row_count
+FROM Train_Providerdata;
+
+--Column Names
+PRAGMA table_info(Train_Beneficiarydata);
+
+PRAGMA table_info(Train_Inpatientdata);
+
+PRAGMA table_info(Train_Outpatientdata);
+
+PRAGMA table_info(Train_Providerdata);
+
+SELECT * 
+FROM Train_Providerdata;
+
+--Fraud Counts
+Select PotentialFraud, COUNT (*) AS Count
+FROM Train_Providerdata
+GROUP BY PotentialFraud;
+
+--Check Claims and Patient Counts
+--Inpatient
+SELECT COUNT (*) AS total_inpatient_count,
+COUNT (DISTINCT ClaimID) AS unique_claims,
+COUNT (DISTINCT BeneID) AS unique_patients,
+COUNT (DISTINCT Provider) AS unique_providers
+FROM Train_Inpatientdata;
+
+--Outpatient
+SELECT COUNT(*) AS total_outpatient_count,
+COUNT (DISTINCT ClaimID) AS unique_claims,
+COUNT (DISTINCT BeneID) AS unique_patients,
+COUNT (DISTINCT Provider) AS unique_providers
+FROM Train_Outpatientdata; 
+
+--Inpatient JOINS
+CREATE VIEW Joined_Inpatient AS
+SELECT i.*,
+b.DOB,
+b.DOD,
+b.Gender,
+b.Race,
+p.PotentialFraud
+FROM Train_Inpatientdata AS i
+LEFT JOIN Train_beneficiarydata AS b
+ON i.BeneID = b.BeneID
+LEFT JOIN Train_Providerdata AS p
+ON i.Provider = p.Provider;
+
+SELECT *
+FROM Joined_Inpatient
+LIMIT 10;
+
+--Outpatient JOINS 
+CREATE VIEW Joined_Outpatient AS
+SELECT o.*,
+b.DOB,
+b.DOD,
+b.Gender,
+b.Race,
+p.PotentialFraud
+FROM Train_Outpatientdata AS o
+LEFT JOIN Train_beneficiarydata AS b
+ON o.BeneID = b.BeneID
+LEFT JOIN Train_Providerdata AS p
+ON o.Provider = p.Provider;
+
+SELECT *
+FROM Joined_Outpatient
+LIMIT 10;
+
+--Claim Level View
+DROP VIEW IF EXISTS All_Claims;
+CREATE VIEW All_Claims AS
+SELECT 'Inpatient' AS claim_type,
+Provider,
+BeneID,
+ClaimID,
+ClaimStartDt,
+ClaimEndDt,
+InscClaimAmtReimbursed,
+DeductibleAmtPaid,
+PotentialFraud
+FROM Joined_Inpatient
+
+UNION ALL
+
+SELECT 'Outpatient' AS claim_type,
+Provider,
+BeneID,
+ClaimID,
+ClaimStartDt,
+ClaimEndDt,
+InscClaimAmtReimbursed,
+DeductibleAmtPaid,
+PotentialFraud
+FROM Joined_Outpatient;
+
+SELECT *
+FROM All_Claims
+LIMIT 10;
+
+SELECT COUNT(*) AS total_claims
+FROM All_Claims;
+
+--Provider level Aggregation 
+DROP VIEW IF EXISTS Provider_Detail;
+
+CREATE VIEW Provider_Detail AS
+SELECT Provider,
+PotentialFraud,
+COUNT (*) AS total_claims,
+COUNT (DISTINCT ClaimID) AS unique_claims,
+COUNT (DISTINCT BeneID) AS unique_patients,
+SUM(CASE WHEN claim_type = 'Inpatient' THEN 1 ELSE 0 END) AS inpatient_claims,
+SUM(CASE WHEN claim_type = 'Outpatient' THEN 1 ELSE 0 END) AS outpatient_claims,
+SUM(CASt(InscClaimAmtReimbursed AS REAL)) AS total_reimbursement,
+AVG(CASt(InscClaimAmtReimbursed AS REAL)) AS avg_reimbursement,
+SUM(CAST(DeductibleAmtPaid AS REAL)) AS total_deductible,
+AVG(CAST(DeductibleAmtPaid AS REAL)) AS avg_deductible,
+AVG(julianday(ClaimEndDt) - julianday(ClaimStartDt) + 1) AS avg_claim_duration,
+COUNT (*) * 1.0 / COUNT(DISTINCT BeneID) AS claim_per_patient 
+
+FROM All_Claims
+GROUP BY Provider, PotentialFraud;
+
+SELECT * 
+FROM Provider_Detail
+LIMIT 20;
+
+SELECT COUNT(*)
+FROM Provider_Detail
+WHERE PotentialFraud = 'Yes';
+
+SELECT COUNT(*) 
+FROM Provider_Detail
+WHERE PotentialFraud IS NULL;
+
+--Final Provider Features
+
+DROP VIEW IF EXISTS Final_Provider_Train;
+
+CREATE VIEW Final_Provider_Train AS
+SELECT
+    Provider,
+    PotentialFraud,
+    total_claims,
+    unique_claims,
+    unique_patients,
+    inpatient_claims,
+    outpatient_claims,
+    total_reimbursement,
+    avg_reimbursement,
+    total_deductible,
+    avg_deductible,
+    avg_claim_duration,
+    claim_per_patient,
+
+    CASE
+        WHEN total_claims > 0
+        THEN inpatient_claims * 1.0 / total_claims
+        ELSE 0
+    END AS inpatient_claim_ratio,
+
+    CASE
+        WHEN total_claims > 0
+        THEN outpatient_claims * 1.0 / total_claims
+        ELSE 0
+    END AS outpatient_claim_ratio,
+
+    CASE
+        WHEN unique_patients > 0
+        THEN total_reimbursement * 1.0 / unique_patients
+        ELSE 0
+    END AS reimbursement_per_patient,
+
+    CASE
+        WHEN unique_patients > 0
+        THEN total_deductible * 1.0 / unique_patients
+        ELSE 0
+    END AS deductible_per_patient
+
+FROM Provider_Detail;
+
+SELECT *
+FROM Final_Provider_Train;

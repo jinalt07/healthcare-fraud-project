@@ -1,0 +1,42 @@
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# Raw and processed data
+Data/Raw/
+Data/Processed/
+
+# CSV files
+*.csv
+
+# Machine learning model files
+*.pkl
+*.joblib
+
+# Model and prediction outputs
+output/models/
+output/predictions/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# VS Code settings
+.vscode/
+
+# Temporary files
+*.tmp
+*.log
+# Database files
+*.db
+sql/*.db

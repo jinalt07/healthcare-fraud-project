@@ -1,0 +1,196 @@
+--Test Data Set
+SELECT *
+FROM Test_Providerdata;
+
+--Row Counts
+SELECT 'Test_Beneficiarydata' AS table_name,
+COUNT(*) AS row_count
+FROM Test_Beneficiarydata
+
+UNION ALL
+
+SELECT 'Test_Inpatientdata',
+COUNT(*)
+FROM Test_Inpatientdata
+
+UNION ALL
+
+SELECT 'Test_Outpatientdata',
+COUNT(*)
+FROM Test_Outpatientdata
+
+UNION ALL
+
+SELECT 'Test_Providerdata',
+COUNT(*)
+FROM Test_Providerdata;
+
+--Coulmn Names
+PRAGMA table_info('Test_Beneficiarydata');
+
+PRAGMA table_info('Test_Inpatientdata');
+
+PRAGMA table_info('Test_Outpatientdata');
+
+PRAGMA table_info('Test_Providerdata');
+
+--Total Providers
+SELECT COUNT(*) AS total_providers,
+COUNT(DISTINCT Provider) AS unique_provider
+FROM Test_Providerdata;
+
+--Inpatient JOINS
+DROP VIEW IF EXISTS Joined_Inpatient_Test;
+
+CREATE VIEW Joined_Inpatient_Test AS
+SELECT
+i.*,
+b.DOB,
+b.DOD,
+b.Gender,
+b.Race
+FROM Test_Inpatientdata AS i
+LEFT JOIN Test_Beneficiarydata AS b
+ON i.BeneID = b.BeneID;
+
+SELECT *
+FROM Joined_Inpatient_Test;
+
+--Outpatient JOINS
+DROP VIEW IF EXISTS Joined_Outpatient_Test;
+
+CREATE VIEW Joined_Outpatient_Test AS
+SELECT
+o.*,
+b.DOB,
+b.DOD,
+b.Gender,
+b.Race
+FROM Test_Outpatientdata AS o
+LEFT JOIN Test_Beneficiarydata AS b
+ON o.BeneID = b.BeneID;
+
+SELECT *
+FROM Joined_Outpatient_Test;
+
+--Checking null values
+
+SELECT COUNT(*) AS inpatient_unmatched_beneficiaries
+FROM Joined_Inpatient_Test
+WHERE DOB IS NULL;
+
+SELECT COUNT(*) AS outpatient_unmatched_beneficiaries
+FROM Joined_Outpatient_Test
+WHERE DOB IS NULL;
+
+--Claim Level View
+
+DROP VIEW IF EXISTS All_Claims_Test;
+
+CREATE VIEW All_Claims_Test AS
+
+SELECT
+'Inpatient' AS claim_type,
+Provider,
+BeneID,
+ClaimID,
+ClaimStartDt,
+ClaimEndDt,
+InscClaimAmtReimbursed,
+DeductibleAmtPaid
+FROM Joined_Inpatient_Test
+
+UNION ALL
+
+SELECT
+'Outpatient' AS claim_type,
+Provider,
+BeneID,
+ClaimID,
+ClaimStartDt,
+ClaimEndDt,
+InscClaimAmtReimbursed,
+DeductibleAmtPaid
+FROM Joined_Outpatient_Test;
+
+SELECT *
+FROM All_Claims_Test;
+
+--Provider Level Features
+DROP VIEW IF EXISTS Provider_Detail_Test;
+
+CREATE VIEW Provider_Detail_Test AS
+SELECT
+Provider,
+COUNT(*) AS total_claims,
+COUNT(DISTINCT ClaimID) AS unique_claims,
+COUNT(DISTINCT BeneID) AS unique_patients,
+SUM(CASE WHEN claim_type = 'Inpatient' THEN 1 ELSE 0 END) AS inpatient_claims,
+SUM(CASE WHEN claim_type = 'Outpatient' THEN 1 ELSE 0 END) AS outpatient_claims,
+SUM(CAST(InscClaimAmtReimbursed AS REAL)) AS total_reimbursement,
+AVG(CAST(InscClaimAmtReimbursed AS REAL)) AS avg_reimbursement,
+SUM(CAST(DeductibleAmtPaid AS REAL)) AS total_deductible,
+AVG(CAST(DeductibleAmtPaid AS REAL)) AS avg_deductible,
+AVG(julianday(ClaimEndDt) - julianday(ClaimStartDt) + 1 ) AS avg_claim_duration,
+CASE WHEN COUNT(DISTINCT BeneID) > 0
+THEN COUNT (*) * 1.0 / COUNT(DISTINCT BeneID)
+ELSE 0
+END AS claims_per_patient
+FROM All_Claims_Test
+GROUP BY Provider;
+
+SELECT *
+FROM Provider_Detail_Test;
+
+SELECT
+    COUNT(*) AS provider_rows,
+    COUNT(DISTINCT Provider) AS unique_providers
+FROM Provider_Detail_Test;
+
+--Final Provider Features
+
+DROP VIEW IF EXISTS Final_Provider_Test;
+
+CREATE VIEW Final_Provider_Test AS
+SELECT
+Provider,
+total_claims,
+unique_claims,
+unique_patients,
+inpatient_claims,
+outpatient_claims,
+total_reimbursement,
+avg_reimbursement,
+total_deductible,
+avg_deductible,
+avg_claim_duration,
+claims_per_patient,
+
+CASE
+WHEN total_claims > 0
+THEN inpatient_claims * 1.0 / total_claims
+ELSE 0
+END AS inpatient_claim_ratio,
+
+CASE
+WHEN total_claims > 0
+THEN outpatient_claims * 1.0 / total_claims
+ELSE 0 
+END AS outpatient_claim_ratio,
+
+CASE 
+WHEN unique_patients > 0
+THEN total_reimbursement * 1.0 / unique_patients
+ELSE 0
+END AS reimbursement_per_patient,
+
+CASE
+WHEN unique_patients > 0
+THEN total_deductible * 1.0 / unique_patients
+ELSE 0
+END AS dedcutible_per_patient
+
+FROM Provider_Detail_Test;
+
+SELECT *
+FROM Final_Provider_Test;
