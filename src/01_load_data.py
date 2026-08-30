@@ -59,6 +59,7 @@ print(beneficiary_data.head())
 ## Data Inspection
 ##=====================
 
+
 ## Provider Data
 ##================
 print("Data Shape")
@@ -84,6 +85,7 @@ print(provider_data["PotentialFraud"].value_counts())
 
 ## Claims Data
 ##===============
+
 print("\nData Shape")
 print(claims_data.shape)
 

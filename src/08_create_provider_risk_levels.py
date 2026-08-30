@@ -2,7 +2,7 @@ from pathlib import Path
 import pandas as pd
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-PROCESSED_FOLDER = PROJECT_ROOT / "Data" / "Processed"
+PROCESSED_FOLDER = PROJECT_ROOT / "Data" / "Processed" / "Train"
 OUTPUT_FOLDER = PROJECT_ROOT / "output" / "models"
 
 final_training_data_file = PROCESSED_FOLDER / "final_training_dataset.csv"

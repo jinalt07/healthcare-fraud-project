@@ -16,7 +16,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 OUTPUT_FOLDER = PROJECT_ROOT / "output" / "models"
 
-MODELS_FOLDER =  OUTPUT_FOLDER / "models"
+MODELS_FOLDER =  OUTPUT_FOLDER 
 
 x_train_file = MODELS_FOLDER / "x_train.csv"
 x_test_file = MODELS_FOLDER / "x_test.csv"

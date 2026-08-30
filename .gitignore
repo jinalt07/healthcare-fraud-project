@@ -37,6 +37,10 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.log
+
 # Database files
 *.db
 sql/*.db
+
+# Duplicate/old chart files
+output/charts/model_comparision.png

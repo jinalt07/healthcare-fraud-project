@@ -4,9 +4,9 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-PROCESSED_FOLDER = PROJECT_ROOT / "Data" / "Processed"
+PROCESSED_FOLDER = PROJECT_ROOT / "Data" / "Processed" / "Train"
 OUTPUT_FOLDER = PROJECT_ROOT / "output" / "models"
-MODELS_FOLDER = OUTPUT_FOLDER / "models"
+MODELS_FOLDER = OUTPUT_FOLDER 
 
 MODELS_FOLDER.mkdir(parents=True, exist_ok=True)
 

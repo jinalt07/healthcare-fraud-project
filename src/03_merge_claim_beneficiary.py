@@ -8,7 +8,7 @@ import pandas as pd
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
-PROCESSED_FOLDER = PROJECT_ROOT / "Data" / "Processed" 
+PROCESSED_FOLDER = PROJECT_ROOT / "Data" / "Processed" / "Train"
 
 provider_clean_file = PROCESSED_FOLDER / "provider_clean.csv"
 claims_clean_file = PROCESSED_FOLDER / "claims_clean.csv"

@@ -11,7 +11,7 @@ import pandas as pd
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 TRAIN_FOLDER = PROJECT_ROOT / "Data" / "Raw" / "Train"
 
-PROCESSED_FOLDER = PROJECT_ROOT / "Data" / "Processed"
+PROCESSED_FOLDER = PROJECT_ROOT / "Data" / "Processed" / "Train"
 
 PROCESSED_FOLDER.mkdir(parents= True, exist_ok =True)
 
@@ -116,16 +116,11 @@ beneficiary_clean["ChronicCond_Heartfailure"] = (beneficiary_clean["ChronicCond_
 beneficiary_clean["ChronicCond_Cancer"] = (beneficiary_clean["ChronicCond_Cancer"].replace({2: 0}))
 beneficiary_clean["ChronicCond_ObstrPulmonary"] = (beneficiary_clean["ChronicCond_ObstrPulmonary"].replace({2: 0}))
 beneficiary_clean["ChronicCond_Depression"] = (beneficiary_clean["ChronicCond_Depression"].replace({2: 0}))
-beneficiary_clean["ChronicCond_Diabetes"] = (
-beneficiary_clean["ChronicCond_Diabetes"].replace({2: 0}))
-beneficiary_clean["ChronicCond_IschemicHeart"] = (
-beneficiary_clean["ChronicCond_IschemicHeart"].replace({2: 0}))
-beneficiary_clean["ChronicCond_Osteoporasis"] = (
-beneficiary_clean["ChronicCond_Osteoporasis"].replace({2: 0}))
-beneficiary_clean["ChronicCond_rheumatoidarthritis"] = (
-beneficiary_clean["ChronicCond_rheumatoidarthritis"].replace({2: 0}))
-beneficiary_clean["ChronicCond_stroke"] = (
-beneficiary_clean["ChronicCond_stroke"].replace({2: 0}))
+beneficiary_clean["ChronicCond_Diabetes"] = (beneficiary_clean["ChronicCond_Diabetes"].replace({2: 0}))
+beneficiary_clean["ChronicCond_IschemicHeart"] = (beneficiary_clean["ChronicCond_IschemicHeart"].replace({2: 0}))
+beneficiary_clean["ChronicCond_Osteoporasis"] = (beneficiary_clean["ChronicCond_Osteoporasis"].replace({2: 0}))
+beneficiary_clean["ChronicCond_rheumatoidarthritis"] = (beneficiary_clean["ChronicCond_rheumatoidarthritis"].replace({2: 0}))
+beneficiary_clean["ChronicCond_stroke"] = (beneficiary_clean["ChronicCond_stroke"].replace({2: 0}))
 
 print("\nAlzheimer")
 print(beneficiary_clean["ChronicCond_Alzheimer"].value_counts(dropna=False))

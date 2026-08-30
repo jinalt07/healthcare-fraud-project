@@ -139,9 +139,9 @@ print(top_20_fraud_chart_file)
 
 import joblib
 
-model_file = OUTPUT_FOLDER / "models" / "models" / "gradient_boosting_model.pkl"
+model_file = OUTPUT_FOLDER / "models" / "gradient_boosting_model.pkl"
 
-x_train_file = OUTPUT_FOLDER / "models" / "models" / "x_train.csv"
+x_train_file = OUTPUT_FOLDER / "models" / "x_train.csv"
 
 selected_model = joblib.load(model_file)
 

@@ -352,7 +352,7 @@ claim_beneficiary_test["claim_duration_days"] = (claim_beneficiary_test["ClaimEn
 
 ## Using same training data threshold
 ##=========================================================================================================================
-PROCESSED_FOLDER_TRAIN = PROJECT_ROOT / "Data" / "Processed" 
+PROCESSED_FOLDER_TRAIN = PROJECT_ROOT / "Data" / "Processed" / "Train"
 
 training_claims_file = PROCESSED_FOLDER_TRAIN / "claims_clean.csv"
 
@@ -512,7 +512,7 @@ print(final_test_dataset.shape)
 ## Final test model input
 ##=========================================================================================================================
 
-x_train_file = PROJECT_ROOT / "output" / "models"/ "models" / "x_train.csv"
+x_train_file = PROJECT_ROOT / "output" / "models" / "x_train.csv"
 
 x_train = pd.read_csv(x_train_file, low_memory= False)
 
@@ -529,7 +529,7 @@ print(X_test_actual.shape)
 print("\nMissing Values in Actual Test Model")
 print(X_test_actual.isna().sum().to_string())
 
-actual_test_file = PROJECT_ROOT / "output" / "models" / "models" / "X_test_actual.csv"
+actual_test_file = PROJECT_ROOT / "output" / "models" / "X_test_actual.csv"
 
 X_test_actual.to_csv(actual_test_file, index=False)
 
