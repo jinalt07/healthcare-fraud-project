@@ -8,7 +8,7 @@ The goal is to identify providers with elevated potential fraud risk based on bi
 
 The model is intended to be used as a fraud-risk screening tool, not as proof of fraud.
 
----
+
 
 ## Project Objective
 
