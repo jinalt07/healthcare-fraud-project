@@ -1,9 +1,8 @@
-<h1 style="border-bottom: none;">Healthcare Provider Fraud Detection</h1>
+**Healthcare Provider Fraud Detection**
 
-<h2 style="border-bottom: none;">Project Overview</h2>
+**Project Overview**
 
 This project builds an end-to-end healthcare provider fraud detection workflow using provider-level, claims-level, and beneficiary-level data.
-
 The goal is to identify providers with elevated potential fraud risk based on billing behavior, claim patterns, patient demographics, chronic-condition burden, reimbursement behavior, and rule-based risk indicators.
 
 The model is intended to be used as a fraud-risk screening tool, not as proof of fraud.
