@@ -27,7 +27,7 @@ The project covers:
 - Final visualizations
 - PDF project report generation
 
----
+
 
 ## Dataset Description
 
@@ -44,7 +44,7 @@ The project uses three main types of data:
 
 The actual test dataset does not contain the fraud label, so the trained model is used to generate fraud-risk predictions.
 
----
+
 
 ## Project Workflow
 
@@ -113,7 +113,7 @@ The models were evaluated using:
 - ROC-AUC
 - PR-AUC
 
----
+
 
 ## Selected Model
 
@@ -135,7 +135,7 @@ Validation performance:
 
 The model caught most fraud-labeled providers in the validation dataset while maintaining reasonable precision.
 
----
+
 
 ## Actual Test Prediction Results
 
@@ -160,7 +160,7 @@ Prediction by risk level:
 | Medium | 42 | 126 |
 | Low | 1,084 | 85 |
 
----
+
 
 ## Key Visualizations
 
@@ -180,7 +180,7 @@ All charts are saved in:
 output/charts/
 ```
 
----
+
 
 ## Final Outputs
 
@@ -193,7 +193,7 @@ output/predictions/test_provider_predictions.csv
 output/reports/final_healthcare_fraud_detection_report_v2.pdf
 ```
 
----
+
 
 ## Project Structure
 
@@ -230,7 +230,7 @@ healthcare-fraud-project/
 └── README.md
 ```
 
----
+
 
 ## Limitations
 
@@ -240,7 +240,7 @@ The model should not be treated as legal or investigative proof of fraud. It sho
 
 The dataset does not include investigation outcomes, legal findings, or detailed diagnosis/procedure-code level fraud patterns. Therefore, the model is limited to the available provider, claims, reimbursement, demographic, and chronic-condition features.
 
----
+
 
 ## Conclusion
 
