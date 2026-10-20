@@ -1,6 +1,6 @@
-# Healthcare Provider Fraud Detection
+<h1 style="border-bottom: none;">Healthcare Provider Fraud Detection</h1>
 
-## Project Overview
+<h2 style="border-bottom: none;">Project Overview</h2>
 
 This project builds an end-to-end healthcare provider fraud detection workflow using provider-level, claims-level, and beneficiary-level data.
 
